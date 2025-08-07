@@ -1,7 +1,14 @@
 import { Config } from '@stencil/core';
+import tailwind from 'stencil-tailwind-plugin'
 
 export const config: Config = {
   namespace: 'w-ui',
+  plugins: [
+    tailwind()
+  ],
+  devServer: {
+    reloadStrategy: 'pageReload',
+  },
   outputTargets: [
     {
       type: 'dist',
