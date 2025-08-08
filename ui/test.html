@@ -8,9 +8,18 @@
     <script src="dist/jc-popup.js" type="module"></script>
 </head>
 <body>
-    <jc-popup>Tomboll</jc-popup>
+    <jc-popup id="jawa-popup" style="background:  red;" href="https://www.youtube.com/embed/aqz-KE-bpKQ">Tomboll</jc-popup>
     <my-element>
       <h1>Vite + Lit</h1>
     </my-element>
+    <script>
+      const jawaPopup = document.querySelector('#jawa-popup')
+      jawaPopup.beforeClose = async ({ reason }) => {
+        return confirm('Yakin?')
+      }
+      jawaPopup.addEventListener('jc:closed', (e) => {
+        console.log(e.detail?.reason)
+      })
+    </script>
 </body>
 </html>
