@@ -9,6 +9,12 @@ export class JcPopup extends LitElement {
   @property()
   href?: string
 
+  @property()
+  width: string = 'auto'
+
+  @property()
+  height: string = 'auto'
+
   // Optional confirmation hook: return false to block closing. Can be async.
   @property({ attribute: false })
   beforeClose?: (ctx: { reason: 'backdrop' | 'button' | 'programmatic' | 'escape' }) => boolean | Promise<boolean>;
@@ -17,6 +23,7 @@ export class JcPopup extends LitElement {
   private _open: boolean = false
 
   render() {
+    const dimension = this.width !== 'auto' && this.height !== 'auto' ? '': 'w-[80vw] max-w-xl'
     const popup = html`
       <div class="fixed inset-0 z-50 flex items-center justify-center ${this._open ? '' : 'pointer-events-none'}">
         <div
@@ -24,7 +31,8 @@ export class JcPopup extends LitElement {
           @click=${() => this._onClose('backdrop')}
         ></div>
         <div
-          class="relative bg-white rounded-lg shadow-xl w-[80vw] max-w-xl mx-4 transition-all duration-300 transform ${this._open ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}"
+          style="width: ${this.width}; height: ${this.height}"
+          class="relative bg-white rounded-lg shadow-xl ${dimension} mx-4 transition-all duration-300 transform ${this._open ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}"
         >
           <button
             class="absolute -top-3 -right-3 bg-red-500 w-7 h-7 rounded-full flex items-center justify-center shadow hover:bg-red-600"
