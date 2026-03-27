@@ -1,0 +1,27 @@
+
+<script>
+    function initWebSocket() {
+        // Create WebSocket connection.
+        const socket = new WebSocket("ws://localhost:8080/jw/web/socket/plugin/id.fajaralfa.joget.websocket.Example");
+
+        // Connection opened
+        socket.addEventListener("open", (event) => {
+            console.log('socket opened.');
+            socket.send("Hello Server!");
+        });
+
+        // Listen for messages
+        socket.addEventListener("message", (event) => {
+            console.log("Message from server ", event.data);
+        });
+
+        onPageLeave(getPageKey(), () => {
+            console.log("socket closed.");
+            socket.close();
+        });
+
+        return socket;
+    }
+
+    var socket = initWebSocket();
+</script>
