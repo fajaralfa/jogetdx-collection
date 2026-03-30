@@ -35,6 +35,7 @@ function onPageLeave(pageName, callback) {
 function runPageHooks(pageName) {
   const hooks = pageHooks[pageName] || [];
   hooks.forEach((cb) => cb());
+  pageHooks[pageName] = []; // clear the page hooks
 }
 
 /**
