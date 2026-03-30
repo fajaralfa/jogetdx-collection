@@ -1,6 +1,9 @@
 package id.fajaralfa.joget.websocket;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.DefaultApplicationPlugin;
@@ -15,9 +18,20 @@ public class Example extends DefaultApplicationPlugin implements PluginWebSocket
     }
 
     @Override
-    public void onMessage(String arg0, Session arg1) {
-        LogUtil.info(getClassName(), "message received: " + arg1.getId());
-        
+    public void onMessage(String message, Session session) {
+        LogUtil.info(getClassName(), "message received: " + session.getId());
+        LogUtil.info(getClassName(), "content: " + message);
+        Set<Session> openSessions = session.getOpenSessions();
+        for (Session s : openSessions) {
+            Future<Void> sendText = s.getAsyncRemote().sendText(message);
+            try {
+                sendText.get();
+            } catch (InterruptedException e) {
+                LogUtil.error(getClassName(), e, e.getMessage());
+            } catch (ExecutionException e) {
+                LogUtil.error(getClassName(), e, e.getMessage());
+            }
+        }
     }
     @Override
     public void onClose(Session session) {

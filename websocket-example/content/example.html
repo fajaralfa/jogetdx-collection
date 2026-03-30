@@ -1,3 +1,10 @@
+<div>
+    <ul id="chat-list"></ul>
+    <div>
+        <input type="text" id="chat-content" class="mb-3">
+        <button id="chat-send" class="btn">Send</button>
+    </div>
+</div>
 
 <script>
     function initWebSocket() {
@@ -10,11 +17,6 @@
             socket.send("Hello Server!");
         });
 
-        // Listen for messages
-        socket.addEventListener("message", (event) => {
-            console.log("Message from server ", event.data);
-        });
-
         onPageLeave(getPageKey(), () => {
             console.log("socket closed.");
             socket.close();
@@ -23,5 +25,38 @@
         return socket;
     }
 
-    var socket = initWebSocket();
+    /**
+     * @param {WebSocket} socket
+     */
+    function listenSendMessage(socket) {
+        // send message
+        console.log('initializing listenSendMessage');
+        $('#chat-send').click(function () {
+            const content = $('#chat-content').val();
+            const payload = JSON.stringify({type: 'message', content: content});
+            console.log('sending message: ', payload);
+            socket.send(payload);
+            $('#chat-content').val('');
+        });
+    }
+
+    function listenUpdateChat(socket) {
+        // update chat list
+        console.log('initializing listenUpdateChat');
+        socket.addEventListener("message", event => {
+            console.log('text json: ', event.data);
+            const data = JSON.parse(event.data);
+            console.log('data: ', data);
+            if (data.type === 'message') {
+                const message = data.content;
+                $('#chat-list').append($('<li>').text(message));
+            }
+        });
+    }
+
+    onPageReady(getPageKey(), () => {
+        var socket = initWebSocket();
+        listenSendMessage(socket);
+        listenUpdateChat(socket);
+    });
 </script>
